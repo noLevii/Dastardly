@@ -20,7 +20,7 @@ jobs:
         continue-on-error: true
         uses: PortSwigger/dastardly-github-action@main
         with:
-          target-url: 'https://functions-titanium-widespread-web.trycloudflare.com/WebGoat'
+          target-url: 'http://functions-titanium-widespread-web.trycloudflare.com/WebGoat'
           output-filename: dastardly-report.xml
 
       - name: Publish JUnit report (always runs)
