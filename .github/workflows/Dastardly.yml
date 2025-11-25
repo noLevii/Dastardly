@@ -1,0 +1,38 @@
+name: Dastardly DAST scan
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+permissions:
+  contents: read
+  checks: write
+  
+jobs:
+  dast-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Dastardly scan (PortSwigger Action)
+        id: dast
+        continue-on-error: true
+        uses: PortSwigger/dastardly-github-action@main
+        with:
+          target-url: 'https://functions-titanium-widespread-web.trycloudflare.com/WebGoat'
+          output-filename: dastardly-report.xml
+
+      - name: Publish JUnit report (always runs)
+        if: always()
+        uses: mikepenz/action-junit-report@v3
+        with:
+          report_paths: '**/dastardly-report.xml'
+          require_tests: true
+
+      - name: Upload Dastardly report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dastardly-report
+          path: dastardly-report.xml
